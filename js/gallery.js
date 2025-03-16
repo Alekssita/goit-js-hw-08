@@ -65,31 +65,20 @@ images.forEach(({ preview, original, description }) => {
   // Делегування
   gallery.appendChild(galleryItem);
 });
+
 gallery.addEventListener('click', (event) => {
   event.preventDefault();  
 
-  const img = event.target.closest('.gallery-image');
+  const img = event.target.closest('.gallery-image');  
   if (!img) return;  
 
-  console.log(img.dataset.source);  
-});
-
-// Модальне вікно
-gallery.addEventListener('click', (event) => {
-  event.preventDefault();
-
-  const img = event.target.closest('.gallery-image');
-  if (!img) return;
-
+  // Получаем ссылку на большое изображение
   const originalImage = img.dataset.source;
 
+  //  модальное окно
   const instance = basicLightbox.create(`
     <img src="${originalImage}" alt="${img.alt}">
   `);
 
   instance.show();
 });
-// Велике зображення
-const instance = basicLightbox.create(`
-  <img src="${originalImage}" alt="${img.alt}">
-`);
