@@ -45,44 +45,51 @@ const images = [
     description: 'Lighthouse Coast Sea',
   },
 ];
-const galleryContainer = document.querySelector('.gallery');
+const gallery = document.querySelector('.gallery');
 
-// Розмітка елементів галереї
-images.forEach(image => {
+images.forEach(({ preview, original, description }) => {
   const galleryItem = document.createElement('li');
   galleryItem.classList.add('gallery-item');
-
-  const galleryLink = document.createElement('a');
-  galleryLink.classList.add('gallery-link');
-  galleryLink.href = image.original;  // Використовуємо велике зображення
-
-  const img = document.createElement('img');
-  img.classList.add('gallery-image');
-  img.src = image.preview;  // Маленьке зображення
-  img.alt = image.description;  // Опис зображення
-  img.setAttribute('data-source', image.original);  // Велике зображення
-
-  galleryLink.appendChild(img);
-  galleryItem.appendChild(galleryLink);
-  galleryContainer.appendChild(galleryItem);
+  
+  galleryItem.innerHTML = `
+    <a class="gallery-link" href="${original}">
+      <img
+        class="gallery-image"
+        src="${preview}"
+        data-source="${original}"
+        alt="${description}"
+      />
+    </a>
+  `;
+    
+  // Делегування
+  gallery.appendChild(galleryItem);
 });
+gallery.addEventListener('click', (event) => {
+  event.preventDefault();  
 
-// Делегування
-galleryContainer.addEventListener('click', (event) => {
-    if (event.target && event.target.classList.contains('gallery-image')) {
-    const originalImage = event.target.getAttribute('data-source');
-    console.log(originalImage);
-  }
+  const img = event.target.closest('.gallery-image');
+  if (!img) return;  
+
+  console.log(img.dataset.source);  
 });
 
 // Модальне вікно
-galleryContainer.addEventListener('click', (event) => {
-    if (event.target && event.target.classList.contains('gallery-image')) {
-    const originalImage = event.target.getAttribute('data-source');
-    
-    const instance = basicLightbox.create(`
-      <img src="${originalImage}" alt="${event.target.alt}" />
-    `);
-    instance.show();
-  }
+gallery.addEventListener('click', (event) => {
+  event.preventDefault();
+
+  const img = event.target.closest('.gallery-image');
+  if (!img) return;
+
+  const originalImage = img.dataset.source;
+
+  const instance = basicLightbox.create(`
+    <img src="${originalImage}" alt="${img.alt}">
+  `);
+
+  instance.show();
 });
+// Велике зображення
+const instance = basicLightbox.create(`
+  <img src="${originalImage}" alt="${img.alt}">
+`);
